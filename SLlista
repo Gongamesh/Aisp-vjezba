@@ -1,0 +1,169 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+typedef struct node {
+	int x;
+	struct node* next;
+} node;
+
+node* formList(node * , int);
+void printList(node *);
+void deleteNode(node *, int);
+void inputNode(node*, int, int);
+void inputEndNode(node*);
+void deleteEndNode(node*);
+void deleteList(node*); //nefunkcionira
+
+int main(void) {
+	node* list = NULL;
+	int n, x, pos;
+
+	printf("Input wanted number of inputs.\n");
+	do {
+		scanf("%d", &n);
+		if (n <= 0) {
+			printf("Wrong input. Try again.\n");
+		}
+	} while (n <= 0);
+
+	for (int i = 0; i < n; i++) {
+		printf("Input value.\n");
+		scanf("%d", &x);
+		list = formList(list, x);
+	}
+
+	printList(list);
+	printf("\n");
+	deleteNode(list, 2);
+	printList(list);
+	printf("\n");
+
+	printf("Input position of new node.\n");
+	scanf("%d", &pos);
+	printf("Input value.\n");
+	scanf("%d", &x);
+	inputNode(list, pos, x);
+	printList(list);
+	printf("\n");
+	inputEndNode(list);
+	printList(list);
+	printf("\n");
+	printf("Deleting end node...\n");
+	deleteEndNode(list);
+	printList(list);
+	printf("\n");
+
+	return 0;
+}
+
+node* formList(node* head, int number) {
+	node* new = NULL;
+
+	if (head == NULL) {
+		new = (node*)malloc(sizeof(node));
+		new->x = number;
+		new->next = NULL;
+		head = new;
+	}
+	else {
+		new = (node*)malloc(sizeof(node));
+		new->x = number;
+		new->next = head;
+		head = new;
+	}
+
+	return head;
+}
+
+void printList(node* head) {
+	node* temp = head;
+
+	if (head == NULL) {
+		printf("List is empty.\n");
+		return;
+	}
+
+	while (temp != NULL) {
+		printf("%d -> ", temp->x);
+		temp = temp->next;
+	}
+}
+
+void deleteNode(node* head, int nodeNumber) {
+	node* temp = head;
+	node* delTemp = temp;
+	int counter = 1;
+
+	while (delTemp != NULL) {
+		if (counter == nodeNumber) {
+			temp->next = delTemp->next;
+			free(delTemp);
+			break;
+		}
+		temp = delTemp;
+		delTemp = delTemp->next;
+		counter++;
+	}
+}
+
+void inputNode(node* head, int position, int value) {
+	int counter = 1;
+	node* temp = head;
+	node* new;
+	if (position == 1) {
+		new = (node*)malloc(sizeof(node));
+		new->x = value;
+		new->next = head->next;
+		head->next = new;
+	}
+	else {
+		while (temp != NULL) {
+			if (counter == position) {
+				new = (node*)malloc(sizeof(node));
+				new->x = value;
+				new->next = temp->next;
+				temp->next = new;
+				break;
+			}
+			temp = temp->next;
+			counter++;
+		}
+	}
+}
+
+void inputEndNode(node* head) {
+	node* temp = head;
+	node* new;
+	int value;
+	while (temp->next!=NULL) {
+		temp = temp->next;
+	}
+	new = (node*)malloc(sizeof(node));
+	printf("Input new value for end node.\n");
+	scanf("%d", &value);
+	new->x = value;
+	new->next = NULL;
+	temp->next = new;
+}
+
+void deleteEndNode(node* head) {
+	node* temp = head;
+	node* delTemp = temp->next;
+	while (delTemp->next != NULL) {
+		temp = temp->next;
+		delTemp = delTemp->next;
+	}
+	temp->next = NULL;
+	free(delTemp);
+}
+
+void deleteList(node* head) { //nefunkcionira
+	node* temp = head;
+	while (head != NULL) {
+		free(temp);
+		head = head->next;
+		temp=head;
+	}
+}
