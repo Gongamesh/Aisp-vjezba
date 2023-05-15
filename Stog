@@ -1,0 +1,98 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+	int x;
+	struct node* next;
+} node;
+node* heapHead = NULL; //bez ovoga pop ne radi
+
+node* push(int);
+int pop();
+int is_empty();
+void clear();
+void printHeap();
+
+int main(void) {
+	node* heap=NULL;
+	int x;
+
+
+	for (int i = 0; i < 10; i++) {
+		heap = push(rand()%5);
+	}
+	printHeap();
+
+	x = pop();
+	printf("\n%d\n", x);
+	printHeap();
+
+	printf("\n");
+	clear();
+
+
+	return 0;
+}
+
+node* push(int value) {
+	node* new = NULL;
+
+	new = (node*)malloc(sizeof(node));
+
+	if (new == NULL) {
+		printf("Stack owerflow. Aborting...\n");
+		perror("Error ");
+		exit(EXIT_FAILURE);
+	}
+
+	new->x = value;
+	new->next = heapHead;
+	heapHead = new;
+
+	return heapHead;
+}
+
+int pop() {
+	int value;
+	node* delNode = NULL;
+
+	if (heapHead == NULL) {
+		printf("Illegal pop. Aborting...\n");
+		exit(EXIT_FAILURE);
+	}
+
+	value = heapHead->x;
+	delNode = heapHead;
+	heapHead = heapHead->next;
+
+	free(delNode);
+	delNode = NULL;
+
+	return value;
+}
+
+int is_empty() {
+	if (heapHead == NULL) {
+		return 0;
+	}
+
+	return 1;
+}
+
+void clear() {
+
+	while (is_empty()) {
+		printf("%d ", pop());
+	}
+
+}
+
+void printHeap() {
+	node* temp = heapHead;
+
+	while (temp != NULL) {
+		printf("%d ", temp->x);
+		temp = temp->next;
+	}
+}
