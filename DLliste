@@ -1,0 +1,139 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+	int x;
+	struct node* next;
+	struct node* prev;
+} node;
+
+node* formList(node*, int);
+void printList(node*);
+void addNodeatEnd(node*, int);
+void inputNode(node*, int, int);
+node* addNodeatBeggining(node*, int);
+
+int main(void) {
+	node* DLlist = NULL;
+	int x, n;
+
+	printf("Input wanted number of inputs.\n");
+	do {
+		scanf("%d", &n);
+		if (n <= 0) {
+			printf("Wrong input. Try again.\n");
+		}
+	} while (n <= 0);
+
+	for (int i = 0; i < n; i++) {
+		printf("Input value.\n");
+		scanf("%d", &x);
+		DLlist = formList(DLlist, x);
+	}
+
+	printList(DLlist);
+	printf("\n");
+
+	addNodeatEnd(DLlist, 6);
+	printList(DLlist);
+	printf("\n");
+
+	inputNode(DLlist, 50, 2);
+	printList(DLlist);
+	printf("\n");
+
+	DLlist = addNodeatBeggining(DLlist, 60);
+	printList(DLlist);
+
+
+	return 0;
+}
+
+node* formList(node* head, int value) {
+	node* new;
+
+	if (head == NULL) {
+		new = (node*)malloc(sizeof(node));
+		new->x = value;
+		new->next = NULL;
+		new->prev = NULL;
+		head = new;
+	}
+	else {
+		new = (node*)malloc(sizeof(node));
+		new->x = value;
+		new->next = head;
+		new->prev = NULL;
+		head = new;
+	}
+
+	return head;
+}
+
+void printList(node* head) {
+	node* temp = head;
+
+	while (temp != NULL) {
+		printf("%d <=> ", temp->x);
+		temp = temp->next;
+	}
+}
+
+void addNodeatEnd(node* head, int value) {
+	node* temp = head;
+	node* new;
+
+	while (temp->next != NULL) {
+		temp = temp->next;
+	}
+
+	new = (node*)malloc(sizeof(node));
+	new->x = value;
+	new->prev = temp;
+	new->next = NULL;
+	temp->next = new;
+}
+
+void inputNode(node* head, int value, int position) {
+	node* temp = head;
+	node* new = NULL;
+	int counter = 1;
+
+	if (position == 1) { 	
+		new = (node*)malloc(sizeof(node));
+		new->x = value;
+		new->next = head->next;
+		new->prev = head;
+		head->next->prev = new;
+		head->next = new;
+	}
+	else {
+		while (temp->next != NULL) {
+			if (counter == position) {
+				new = (node*)malloc(sizeof(node));
+				new->x = value;
+				new->next = temp->next;
+				temp->next->prev = new;
+				new->prev = temp;
+				temp->next = new;
+				return;
+			}
+			temp = temp->next;
+			counter++;
+		}
+	}
+}
+
+node* addNodeatBeggining(node* head, int value) {
+	node* new = NULL;
+
+	if (head != NULL) {
+		new = (node*)malloc(sizeof(node));
+		new->x = value;
+		new->prev = NULL;
+		new->next = head;
+		return new;
+	}
+
+}
