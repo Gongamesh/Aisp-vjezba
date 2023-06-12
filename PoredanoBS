@@ -1,0 +1,207 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+	int x;
+	struct Node* left;
+	struct Node* right;
+}Node;
+
+int SearchBST(Node*, int, Node**);
+int SearchBSTREC(Node*, int, Node**);
+Node* InsertBST(Node*, int);
+Node* SmallestNode(Node*);
+Node* DeleteBTS(Node*, int);
+void Preorder(Node*);
+void Inorder(Node*);
+void Postorder(Node*);
+
+
+int main(void) {
+	Node* root = NULL;
+	int x, array[5];
+
+	root = InsertBST(root, 5);
+	root = InsertBST(root, 10);
+	root = InsertBST(root, 3);
+	root = InsertBST(root, 7);
+	root = InsertBST(root, 4);
+
+
+	//printf("\n");
+	Preorder(root);
+	printf("\n");
+	Inorder(root);
+	printf("\n");
+	Postorder(root);
+	printf("\n");
+
+	Node* parent = NULL;
+	x = 11;
+	printf("Looking for %d.\n", x);
+	if (SearchBSTREC(root, x, &parent)) {
+		printf("Node %d exists.\n", x);
+	}
+	else {
+		printf("Node %d does not exist.\n", x);
+	}
+
+	root = DeleteBTS(root, 4);
+
+	Preorder(root);
+	printf("\n");
+	Inorder(root);
+	printf("\n");
+	Postorder(root);
+	printf("\n");
+
+	free(root);
+	free(parent);
+	return 0;
+}
+
+int SearchBST(Node* node, int x, Node** parent) {
+	*parent = NULL;
+	if (node == NULL){
+		return 0;
+		}
+	while (1) {
+		if (node->x == x) {
+			return 1;
+		}
+		else {
+			*parent = node;
+			if (x < node->x) {
+				if (node->left != NULL) {
+					node = node->left;
+				}
+				else {
+					return 0;
+				}
+			}
+			else {
+				if (node->right != NULL) {
+					node = node->right;
+				}
+				else {
+					return 0;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+int SearchBSTREC(Node* node, int x, Node** parent) {
+	if (node == NULL) {
+		return 0;
+	}
+	if (node->x == x) {
+		return 1;
+	}
+	*parent = node;
+	if (node->x > x) {
+		return SearchBSTREC(node->left, x, parent);
+	}
+	else {
+		return SearchBSTREC(node->right, x, parent);
+	}
+
+	return 0;
+}
+
+Node* InsertBST(Node* node, int x) {
+	Node* parent = NULL;
+	Node* newnode = NULL;
+	if (SearchBSTREC(node, x, &parent)) {
+		return node;
+	}
+	else {
+		newnode = (Node*)malloc(sizeof(Node));
+		newnode->x = x;
+		newnode->left = newnode->right = NULL;
+		if (parent == NULL) {
+			return newnode;
+		}
+		else {
+			if (x < parent->x) {
+				parent->left = newnode;
+			}
+			else {
+				parent->right = newnode;
+			}
+		}
+	}
+	return node;
+}
+
+Node* SmallestNode(Node* node) {
+	Node* t = node;
+	while (t->left != NULL) {
+		t = t->left;
+	}
+	return t;
+}
+
+Node* DeleteBTS(Node* node, int x) {
+	Node* temp;
+	if (node == NULL) {
+		return node;
+	}
+	if (x < node->x) {
+		node->left = DeleteBTS(node->left, x);
+	}
+	else if (x > node->x) {
+		node->right = DeleteBTS(node->right, x);
+	}
+	else {
+		if (node->left == NULL) {
+			temp = node->right;
+			free(node);
+			return temp;
+		}
+		else if(node->right==NULL) {
+			temp = node->left;
+			free(node);
+			return temp;
+		}
+		temp = SmallestNode(node->right);
+		node->x = temp->x;
+		node->right = DeleteBTS(node->right, temp->x);
+	}
+	return node;
+}
+
+void Inorder(Node* node) {
+	if (node == NULL) {
+		return;
+	}
+	else {
+		Inorder(node->left);
+		printf("%d ", node->x);
+		Inorder(node->right);
+	}
+}
+
+void Postorder(Node* node) {
+	if (node == NULL) {
+		return;
+	}
+	else {
+		Postorder(node->left);
+		Postorder(node->right);
+		printf("%d ", node->x);
+	}
+}
+
+void Preorder(Node* node) {
+	if (node == NULL) {
+		return;
+	}
+	else {
+		printf("%d ", node->x);
+		Preorder(node->left);
+		Preorder(node->right);
+	}
+}
