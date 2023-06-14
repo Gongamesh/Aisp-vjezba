@@ -1,0 +1,135 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+typedef struct node {
+	float x;
+	float y;
+	struct Node* next;
+}Node;
+
+Node* createList(Node*, float, float);
+void printList(Node*);
+void calculateDistance(Node*);
+void rek(int);
+
+int main(void) {
+	Node* prvi = NULL;
+	float x, y;
+
+	for (int i = 0; i < 5; i++) {
+		/*printf("Unesite x.\n");
+		scanf("%f", &x);
+		printf("Unesite y.\n");
+		scanf("%f", &y);*/
+		x = rand() % 10;
+		y = rand() % 10;
+		prvi = createList(prvi, x, y);
+	}
+
+	printList(prvi);
+	
+	printf("\n");
+
+	calculateDistance(prvi);
+
+	printf("\n");
+
+	rek(5);
+
+	free(prvi);
+	return 0;
+}
+
+Node* createList(Node* head, float x, float y) {
+	Node* new = NULL;
+	Node* temp = head;
+
+	if (temp == NULL) {
+		new = (Node*)malloc(sizeof(Node));
+		new->x = x;
+		new->y = y;
+		new->next = NULL;
+		head = new;
+	}
+	else {
+		new = (Node*)malloc(sizeof(Node));
+		new->x = x;
+		new->y = y;
+		new->next = head;
+		head = new;
+	}
+
+	return head;
+}
+
+void printList(Node* head) {
+	Node* temp = head;
+
+	while (temp != NULL) {
+		printf("(%.2f, %.2f) ", temp->x, temp->y);
+		temp = temp->next;
+	}
+}
+
+void calculateDistance(Node* head) {
+	Node* temp = head;
+	float distance, distance2;
+	int index = 1, index2 = 1;
+	Node* dot = head;
+
+	if (temp->x == 0 && temp->y == 0) {
+		distance = 0;
+	}
+	else if (temp->x == 0 || temp->y == 0) {
+		distance = temp->x + temp->y;
+	}
+	else {
+		distance = sqrt((temp->x * temp->x) + (temp->y + temp->y));
+	}
+	temp = temp->next;
+
+	
+	while (temp != NULL) {
+		index2++;
+
+		if (temp->x == 0 && temp->y == 0) {
+			distance2 = 0;
+		}
+		else if (temp->x == 0 || temp->y == 0) {
+			distance2 = temp->x + temp->y;
+		}
+		else {
+			distance2 = sqrt((temp->x * temp->x) + (temp->y * temp->y));
+		}
+
+		if (distance < distance2) {
+			distance = distance2;
+			index = index2;
+		}
+
+		temp = temp->next;
+	}
+
+	index2 = 1;
+	while (dot != NULL) {
+		if (index2 == index) {
+			printf("Najveca udaljenost od ishodista je %.2f i nalazi se na tocki (%.2f, %.2f).\n", distance, dot->x, dot->y);
+			break;
+		}
+		dot = dot->next;
+		index2++;
+	}
+}
+
+void rek(int n) {
+	if (n == 0) {
+		return;
+	}
+	for (int i = 1; i < n + 1; i++) {
+		printf("%d", i);
+	}
+	printf("\n");
+	return rek(n - 1);
+}
