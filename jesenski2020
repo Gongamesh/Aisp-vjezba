@@ -1,0 +1,114 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+typedef struct node {
+	int x;
+	struct Node* next;
+}Node;
+
+Node* createList(Node*, int);
+int printList(Node*);
+void checkSizeOfLists(Node*, Node*, int, int);
+int sumZnamenkiREC(int);
+int produktZnamenkiREC(int);
+
+int main(void) {
+	// 2. jesenski 2020.
+	Node* list1 = NULL;
+	Node* list2 = NULL;
+	int n, m, x, y;
+
+	srand((unsigned)time(NULL));
+
+	n = rand() % 11;
+	printf("n: %d\n", n);
+	m = rand() % 11;
+	printf("m: %d\n", m);
+
+	for (int i = 0; i < n; i++) {
+		list1 = createList(list1, rand() % 10);
+	}
+
+	for (int i = 0; i < m; i++) {
+		list2 = createList(list2, rand() % 10);
+	}
+
+	x = printList(list1);
+	printf("\n");
+	y = printList(list2);
+
+	printf("\n");
+
+	checkSizeOfLists(list1, list2, x, y);
+
+	//1. jesenski 2020.
+
+	x = sumZnamenkiREC(255);
+	printf("suma je: %d\n", x);
+	x = produktZnamenkiREC(333);
+	printf("produkt je: %d\n", x);
+
+	return 0;
+}
+
+Node* createList(Node* head, int value) {
+	Node* new = NULL;
+
+	new = (Node*)malloc(sizeof(Node));
+	new->x = value;
+	new->next = head;
+	head = new;
+
+	return head;
+}
+
+int printList(Node* head) {
+	Node* temp = head;
+	int counter = 0;
+
+	while (temp != NULL) {
+		printf("%d ", temp->x);
+		temp = temp->next;
+		counter++;
+	}
+
+	return counter;
+}
+
+void checkSizeOfLists(Node* head1, Node* head2, int size1, int size2) {
+	Node* temp = NULL;
+
+	if (size1 == size2) {
+		printf("Lists have %d elements.\n", size1);
+	}
+	else if (size1 > size2) {
+		temp = head1;
+		while (temp->next != NULL) {
+			temp = temp->next;
+		}
+		printf("%d\n", temp->x);
+	}
+	else {
+		temp = head2;
+		printf("%d\n", temp->x);
+	}
+}
+
+int sumZnamenkiREC(int n) {
+	static sum;
+	if (n < 10) {
+		return sum + n;
+	}
+	sum = (n % 10) + sumZnamenkiREC(n / 10);
+	return sum;
+}
+
+int produktZnamenkiREC(int n) {
+	if (n == 0) {
+		return 1;
+	}
+	return (n % 10) * produktZnamenkiREC(n / 10);
+}
+
