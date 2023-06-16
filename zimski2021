@@ -1,0 +1,191 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+void fun(int);
+void abc(char* s);
+
+int main(void) {
+	// 2. ZIMSKI 2021.
+	char matrix[5][5] = { {'.','#','#','.','.' },
+						{'.','#','#','.','#' },
+						{'.','.','#','.','.' },
+						{'#','#','#','#','#'},
+						{'#','#','#','#','#'}
+	};
+
+	/*trebalo bi ici :
+	int m, n;
+	
+	do{
+		printf("Unesite velicinu matrice.\n");
+		scanf("%d %d", &m, &n);
+		if (m < 0 || n < 0) {
+			printf("Pogresan unos!\n");
+		}
+	}while(m < 0 || n < 0);
+	*/
+
+	int array[5]; // niz pomocu kojega cu pamtiti indekse redova s najvecim brojem #
+	int counter = 0, index = 0, counter1 = 0;
+
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			if (matrix[i][j] == '#') {
+				counter1++;
+			}
+		}
+		if (counter < counter1) {
+			counter = counter1;
+			index = i;
+		}
+		counter1 = 0;
+	}
+	int k = 0;
+
+	array[k] = index;
+
+	//printf("%d", array[k]);
+
+	counter1 = 0;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			if (matrix[i][j] == '#') {
+				counter1++;
+			}
+		}
+		if (counter == counter1) {
+			index = i;
+			if (array[k] == index) {
+				counter1 = 0;
+				continue;
+			}
+			else {
+				k++;
+				array[k] = index;
+			}
+		}
+		counter1 = 0;
+	}
+
+
+	for (int i = 0; i < k+1; i++) {
+		printf("Redak koji ima najvise # je %d.\n", array[i]+1);
+	}
+
+	printf("\n");
+
+	// 1. ZIMSKI 2021.
+	int** matrix1 = NULL;
+	int m, n;
+
+	do {
+		printf("Input vertical size of array.\n");
+		scanf("%d", &m);
+		printf("Input horizontal size of array.\n");
+		scanf("%d", &n);
+		if (m < 0 || n < 0) {
+			printf("Wrong input!\n");
+		}
+	} while (m < 0 || n < 0);
+
+	matrix1 = (int**)calloc(m, sizeof(int*));
+	if (matrix1 == NULL) {
+		perror("Error: ");
+		exit(EXIT_FAILURE);
+	}
+	for (int i = 0; i < m; i++) {
+		*(matrix1 + i) = (int*)calloc(n, sizeof(int));
+		if (*(matrix1+i) == NULL) {
+			perror("Error: ");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			*(*(matrix1 + i) + j) = rand() % 2;
+		}
+	}
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%d ", matrix1[i][j]);
+		}
+		printf("\n");
+	}
+
+	int* indexArray = NULL;
+	indexArray = (int*)calloc(m, sizeof(int));
+	if (indexArray == NULL) {
+		perror("Error: ");
+		exit(EXIT_FAILURE);
+	}
+	int temp = 0;
+	counter1 = 0;
+	int z = 0;
+	
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (*(*(matrix1 + i) + j) == 1) {
+				counter1++;
+			}
+		}
+		//printf("Row %d: %d\n", i, counter1);
+		if (temp < counter1) {
+			temp = counter1;
+			index = i;
+		}
+		//printf("Row %d: temp: %d\n", i, temp);
+		counter1 = 0;
+	}
+	//printf("Index is: %d\n", index);
+
+	*(indexArray + z) = index;
+
+	//printf("Index array first element: %d\n", *(indexArray + z));
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (*(*(matrix1 + i) + j) == 1) {
+				counter1++;
+			}
+		}
+		if (counter1 == temp) {
+			index = i;
+			if (index == *(indexArray + z)) {
+				counter1 = 0;
+				continue;
+			}
+			else {
+				z++;
+				*(indexArray + z) = index;
+			}
+		}
+		counter1 = 0;
+	}
+
+
+	for (int i = 0; i < z+1; i++) {
+		printf("Row with most 1s is: %d.\n", *(indexArray + i) + 1);
+	}
+
+	return 0;
+}
+
+void fun(int x) {
+	printf(" %d: ", x);
+	if (x > 0) {
+		fun(--x);
+		printf("*%d*", x);
+		fun(--x);
+	}
+}
+
+void abc(char* s) {
+	if (s[0] == 0) return;
+	printf("%c", s[0]);
+	abc(s + 1);
+	abc(s + 1);
+	printf("*");
+}
